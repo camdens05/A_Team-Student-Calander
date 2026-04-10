@@ -27,6 +27,9 @@ def create_event_object(event_type: str, data: dict) -> Event:
         "event_type": normalized_type,
     }
 
+    if normalized_type == "event":
+        return Event(**common_args)
+
     if normalized_type == "appointment":
         return AppointmentEvent(**common_args)
 
