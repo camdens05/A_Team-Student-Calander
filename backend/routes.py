@@ -8,7 +8,7 @@ and deleting events. It connects user actions in the interface to backend logic.
 """
 
 from models import Event
-from event_factory import create_event
+from event_factory import create_event_object
 from database import get_db_connection
 
 from flask import jsonify, request
@@ -67,18 +67,23 @@ def register_routes(app):
             ), 400
 
         try:
+            # Use event_factory to validate and build the correct event object
+            event_obj = create_event_object(data["event_type"], data)
+
             event_id = create_event(
-                user_id=data["user_id"],
-                title=data["title"],
-                event_type=data["event_type"],
-                start_time=data["start_time"],
-                end_time=data.get("end_time"),
-                description=data.get("description"),
-                location=data.get("location"),
-                recurrence_rule=data.get("recurrence_rule"),
-                is_all_day=data.get("is_all_day", False),
-                reminder_minutes=data.get("reminder_minutes"),
+                user_id=event_obj.user_id,
+                title=event_obj.title,
+                event_type=event_obj.event_type,
+                start_time=event_obj.start_time,
+                end_time=event_obj.end_time,
+                description=event_obj.description,
+                location=event_obj.location,
+                recurrence_rule=event_obj.recurrence_rule,
+                is_all_day=event_obj.is_all_day,
+                reminder_minutes=event_obj.reminder_minutes,
             )
+        except ValueError as exc:
+            return jsonify({"error": str(exc)}), 400
         except Exception as exc:
             return jsonify({"error": str(exc)}), 500
 
