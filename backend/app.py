@@ -17,6 +17,18 @@ from routes import register_routes
 def create_app():
     app = Flask(__name__)
 
+    # Allow the frontend (served on a different origin/port) to reach the API.
+    @app.after_request
+    def add_cors_headers(response):
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        return response
+
+    @app.route("/api/<path:path>", methods=["OPTIONS"])
+    def handle_options(path):
+        return "", 204
+
     init_db()
     register_routes(app)
 
