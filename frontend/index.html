@@ -10,24 +10,26 @@
 <body>
     <div id="app">
 
-        <!-- ── Header ── -->
+        <!-- Header -->
         <header class="header">
             <div class="header-left">
                 <h1 class="app-title">Student Calendar</h1>
             </div>
+
             <div class="header-center">
                 <button id="prev-month" class="nav-btn" aria-label="Previous month">&#8249;</button>
                 <h2 id="month-label" class="month-label"></h2>
                 <button id="next-month" class="nav-btn" aria-label="Next month">&#8250;</button>
                 <button id="today-btn" class="today-btn">Today</button>
             </div>
+
             <div class="header-right">
                 <span class="user-label">User&nbsp;<strong id="user-display">1</strong></span>
                 <button id="change-user-btn" class="btn-ghost">Change</button>
             </div>
         </header>
 
-        <!-- ── Main layout ── -->
+        <!-- Main layout -->
         <div class="main-content">
 
             <!-- Calendar grid -->
@@ -56,17 +58,41 @@
                 <div class="sidebar-section">
                     <h3 class="sidebar-heading">Legend</h3>
                     <div class="legend">
-                        <div class="legend-item"><span class="legend-dot type-event"></span>General</div>
-                        <div class="legend-item"><span class="legend-dot type-appointment"></span>Appointment</div>
-                        <div class="legend-item"><span class="legend-dot type-recurring"></span>Recurring</div>
-                        <div class="legend-item"><span class="legend-dot type-allday"></span>All-day</div>
+                        <div class="legend-item">
+                            <span class="legend-dot type-class"></span>
+                            Class
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot type-assignment"></span>
+                            Assignment
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot type-exam"></span>
+                            Exam
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot type-study"></span>
+                            Study Session
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot type-appointment"></span>
+                            Appointment
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot type-event"></span>
+                            General
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot type-allday"></span>
+                            All-day
+                        </div>
                     </div>
                 </div>
             </aside>
         </div>
     </div>
 
-    <!-- ── Event modal ── -->
+    <!-- Event modal -->
     <div id="event-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
         <div class="modal-content">
             <div class="modal-header">
@@ -78,39 +104,87 @@
                 <input type="hidden" id="event-id">
 
                 <div class="form-group">
-                    <label for="event-title">Title <span class="required">*</span></label>
+                    <label for="event-title">
+                        Title <span class="required">*</span>
+                    </label>
                     <input type="text" id="event-title" placeholder="Event title" required>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="event-type">Type <span class="required">*</span></label>
+                        <label for="event-type">
+                            Type <span class="required">*</span>
+                        </label>
                         <select id="event-type" required>
-                            <option value="event">General Event</option>
+                            <option value="class">Class</option>
+                            <option value="assignment">Assignment</option>
+                            <option value="exam">Exam</option>
+                            <option value="study">Study Session</option>
                             <option value="appointment">Appointment</option>
-                            <option value="recurring">Recurring</option>
+                            <option value="event">General Event</option>
                             <option value="allday">All Day</option>
                         </select>
                     </div>
-                    <div class="form-group" id="reminder-group">
-                        <label for="event-reminder">Reminder (min before)</label>
-                        <input type="number" id="event-reminder" min="0" placeholder="e.g. 15">
+
+                    <div class="form-group">
+                        <label for="event-priority">Priority</label>
+                        <select id="event-priority">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-course">Course</label>
+                    <input type="text" id="event-course" placeholder="e.g. CS 3214, ECON 3254">
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="event-start">Start <span class="required">*</span></label>
+                        <label for="event-start">
+                            Start <span class="required">*</span>
+                        </label>
                         <input type="datetime-local" id="event-start" required>
                     </div>
+
                     <div class="form-group" id="end-time-group">
                         <label for="event-end">End</label>
                         <input type="datetime-local" id="event-end">
                     </div>
                 </div>
 
+                <div class="form-row">
+                    <div class="form-group" id="reminder-group">
+                        <label for="event-reminder">Reminder</label>
+                        <select id="event-reminder">
+                            <option value="">No reminder</option>
+                            <option value="5">5 minutes before</option>
+                            <option value="10">10 minutes before</option>
+                            <option value="15">15 minutes before</option>
+                            <option value="30">30 minutes before</option>
+                            <option value="60">1 hour before</option>
+                            <option value="1440">1 day before</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-recurrence-preset">Repeat</label>
+                        <select id="event-recurrence-preset">
+                            <option value="">Does not repeat</option>
+                            <option value="FREQ=DAILY">Daily</option>
+                            <option value="FREQ=WEEKLY">Weekly</option>
+                            <option value="FREQ=WEEKLY;BYDAY=MO,WE,FR">Every Mon/Wed/Fri</option>
+                            <option value="FREQ=WEEKLY;BYDAY=TU,TH">Every Tue/Thu</option>
+                            <option value="FREQ=MONTHLY">Monthly</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group hidden" id="recurrence-group">
-                    <label for="event-recurrence">Recurrence Rule</label>
+                    <label for="event-recurrence">Custom Recurrence Rule</label>
                     <input type="text" id="event-recurrence" placeholder="e.g. FREQ=WEEKLY;BYDAY=MO,WE,FR">
                 </div>
 
@@ -121,11 +195,19 @@
 
                 <div class="form-group">
                     <label for="event-description">Description</label>
-                    <textarea id="event-description" placeholder="Optional" rows="3"></textarea>
+                    <textarea id="event-description" placeholder="Optional notes, assignment details, or study goals" rows="3"></textarea>
                 </div>
+
+                <div class="form-group">
+                    <label for="event-url">Related Link</label>
+                    <input type="url" id="event-url" placeholder="Optional Canvas, Zoom, or assignment link">
+                </div>
+
+                <div id="event-error" class="form-error hidden" role="alert"></div>
 
                 <div class="form-actions">
                     <button type="button" id="delete-event-btn" class="btn-danger hidden">Delete</button>
+
                     <div class="form-actions-right">
                         <button type="button" id="cancel-btn" class="btn-secondary">Cancel</button>
                         <button type="submit" class="btn-primary">Save</button>
@@ -135,17 +217,22 @@
         </div>
     </div>
 
-    <!-- ── User-select modal ── -->
-    <div id="user-modal" class="modal hidden" role="dialog" aria-modal="true">
+    <!-- User-select modal -->
+    <div id="user-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="user-modal-title">
         <div class="modal-content modal-small">
             <div class="modal-header">
-                <h2>Set User ID</h2>
+                <h2 id="user-modal-title">Set User ID</h2>
             </div>
-            <p class="modal-hint">Enter the numeric ID of the user whose calendar you want to view.</p>
+
+            <p class="modal-hint">
+                Enter the numeric ID of the user whose calendar you want to view.
+            </p>
+
             <div class="form-group">
                 <label for="user-id-input">User ID</label>
                 <input type="number" id="user-id-input" min="1" value="1">
             </div>
+
             <div class="form-actions">
                 <div class="form-actions-right">
                     <button id="confirm-user-btn" class="btn-primary">Confirm</button>
@@ -154,7 +241,7 @@
         </div>
     </div>
 
-    <!-- ── Toast notifications ── -->
+    <!-- Toast notifications -->
     <div id="toast-container" aria-live="polite"></div>
 
     <script type="module" src="app.js"></script>
