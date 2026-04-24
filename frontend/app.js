@@ -10,29 +10,29 @@ import { fetchEvents, createEvent, deleteEvent, updateEvent } from "./api.js";
 
 // ── State ─────────────────────────────────────────────────────────────────────
 
-let currentDate  = new Date();       // month currently displayed
+let currentDate = new Date();       // month currently displayed
 let currentUserId = parseInt(localStorage.getItem("userId") || "0", 10);
-let events        = [];              // all events for currentUserId
-let editingId     = null;            // id of event being edited, or null
+let events = [];              // all events for currentUserId
+let editingId = null;            // id of event being edited, or null
 
 // ── DOM refs ──────────────────────────────────────────────────────────────────
 
-const $  = id => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
-const monthLabel       = $("month-label");
-const calendarGrid     = $("calendar-grid");
-const upcomingList     = $("upcoming-events");
-const eventModal       = $("event-modal");
-const userModal        = $("user-modal");
-const eventForm        = $("event-form");
-const modalTitle       = $("modal-title");
-const userDisplay      = $("user-display");
-const deleteBtn        = $("delete-event-btn");
-const recurrenceGroup  = $("recurrence-group");
+const monthLabel = $("month-label");
+const calendarGrid = $("calendar-grid");
+const upcomingList = $("upcoming-events");
+const eventModal = $("event-modal");
+const userModal = $("user-modal");
+const eventForm = $("event-form");
+const modalTitle = $("modal-title");
+const userDisplay = $("user-display");
+const deleteBtn = $("delete-event-btn");
+const recurrenceGroup = $("recurrence-group");
 
 const MONTHS = [
-    "January","February","March","April","May","June",
-    "July","August","September","October","November","December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December",
 ];
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
@@ -69,7 +69,7 @@ function openCalendarToCurrentMonth() {
 }
 
 function renderCalendar() {
-    const year  = currentDate.getFullYear();
+    const year = currentDate.getFullYear();
     const month = currentDate.getMonth();   // 0-indexed
 
     monthLabel.textContent = `${MONTHS[month]} ${year}`;
@@ -77,9 +77,9 @@ function renderCalendar() {
     // Remove previous day cells (leave the 7 header cells in place).
     calendarGrid.querySelectorAll(".day-cell").forEach(el => el.remove());
 
-    const firstWeekday  = new Date(year, month, 1).getDay();   // 0 = Sun
-    const daysInMonth   = new Date(year, month + 1, 0).getDate();
-    const daysInPrev    = new Date(year, month, 0).getDate();
+    const firstWeekday = new Date(year, month, 1).getDay();   // 0 = Sun
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysInPrev = new Date(year, month, 0).getDate();
 
     const todayStr = isoDate(new Date());
 
@@ -98,7 +98,7 @@ function renderCalendar() {
     }
 
     // Trailing days from the next month to fill the last row.
-    const total    = firstWeekday + daysInMonth;
+    const total = firstWeekday + daysInMonth;
     const trailing = total % 7 === 0 ? 0 : 7 - (total % 7);
     for (let d = 1; d <= trailing; d++) {
         appendDayCell(year, month + 1, d, false, todayStr, byDate);
@@ -108,7 +108,7 @@ function renderCalendar() {
 }
 
 function appendDayCell(year, month, day, isCurrentMonth, todayStr, byDate) {
-    const date    = new Date(year, month, day);   // JS handles month overflow
+    const date = new Date(year, month, day);   // JS handles month overflow
     const dateStr = isoDate(date);
     const isToday = dateStr === todayStr;
 
@@ -116,7 +116,7 @@ function appendDayCell(year, month, day, isCurrentMonth, todayStr, byDate) {
     cell.className = [
         "day-cell",
         isCurrentMonth ? "" : "other-month",
-        isToday        ? "today" : "",
+        isToday ? "today" : "",
     ].join(" ").trim();
     cell.dataset.date = dateStr;
 
@@ -127,10 +127,10 @@ function appendDayCell(year, month, day, isCurrentMonth, todayStr, byDate) {
     cell.appendChild(numEl);
 
     // Event chips.
-    const dayEvents  = byDate[dateStr] || [];
-    const eventsEl   = document.createElement("div");
+    const dayEvents = byDate[dateStr] || [];
+    const eventsEl = document.createElement("div");
     eventsEl.className = "day-events";
-    const MAX_CHIPS  = 3;
+    const MAX_CHIPS = 3;
 
     dayEvents.slice(0, MAX_CHIPS).forEach(ev => {
         const chip = document.createElement("div");
@@ -183,15 +183,15 @@ function renderUpcoming() {
     }
 
     for (const ev of upcoming) {
-        const li   = document.createElement("li");
+        const li = document.createElement("li");
         li.className = `event-list-item type-${ev.event_type || "event"}`;
 
         const title = document.createElement("div");
-        title.className  = "ev-title";
+        title.className = "ev-title";
         title.textContent = ev.title;
 
         const time = document.createElement("div");
-        time.className  = "ev-time";
+        time.className = "ev-time";
         time.textContent = formatEventTime(ev);
 
         li.appendChild(title);
@@ -221,7 +221,7 @@ function openNewModal(dateStr) {
 
     if (dateStr) {
         $("event-start").value = `${dateStr}T09:00`;
-        $("event-end").value   = `${dateStr}T10:00`;
+        $("event-end").value = `${dateStr}T10:00`;
     }
 
     showModal(eventModal);
@@ -231,15 +231,15 @@ function openEditModal(ev) {
     editingId = ev.id;
     modalTitle.textContent = "Edit Event";
 
-    $("event-id").value          = ev.id;
-    $("event-title").value       = ev.title          || "";
-    $("event-type").value        = ev.event_type      || "event";
-    $("event-start").value       = toDatetimeLocal(ev.start_time);
-    $("event-end").value         = toDatetimeLocal(ev.end_time);
-    $("event-location").value    = ev.location        || "";
-    $("event-description").value = ev.description     || "";
-    $("event-reminder").value    = ev.reminder_minutes != null ? ev.reminder_minutes : "";
-    $("event-recurrence").value  = ev.recurrence_rule || "";
+    $("event-id").value = ev.id;
+    $("event-title").value = ev.title || "";
+    $("event-type").value = ev.event_type || "event";
+    $("event-start").value = toDatetimeLocal(ev.start_time);
+    $("event-end").value = toDatetimeLocal(ev.end_time);
+    $("event-location").value = ev.location || "";
+    $("event-description").value = ev.description || "";
+    $("event-reminder").value = ev.reminder_minutes != null ? ev.reminder_minutes : "";
+    $("event-recurrence").value = ev.recurrence_rule || "";
 
     recurrenceGroup.classList.toggle("hidden", ev.event_type !== "recurring");
     deleteBtn.classList.remove("hidden");
@@ -259,26 +259,27 @@ function hideModal(modal) { modal.classList.add("hidden"); }
 
 // ── Form submission ───────────────────────────────────────────────────────────
 
+// Saves a new event or updates an existing event using only backend-supported fields
 async function handleFormSubmit(e) {
     e.preventDefault();
 
-    const type     = $("event-type").value;
+    const type = $("event-type").value;
     const startRaw = $("event-start").value;
-    const endRaw   = $("event-end").value;
+    const endRaw = $("event-end").value;
 
     const data = {
-        user_id:          currentUserId,
-        title:            $("event-title").value.trim(),
-        event_type:       type,
-        start_time:       startRaw.replace("T", " "),
-        end_time:         endRaw   ? endRaw.replace("T", " ")                     : null,
-        location:         $("event-location").value.trim()    || null,
-        description:      $("event-description").value.trim() || null,
-        reminder_minutes: parseInt($("event-reminder").value) || null,
-        recurrence_rule:  type === "recurring"
-                            ? $("event-recurrence").value.trim() || null
-                            : null,
-        is_all_day:       type === "allday",
+        user_id: currentUserId,
+        title: $("event-title").value.trim(),
+        event_type: type,
+        start_time: startRaw.replace("T", " "),
+        end_time: endRaw ? endRaw.replace("T", " ") : null,
+        location: $("event-location").value.trim() || null,
+        description: $("event-description").value.trim() || null,
+        reminder_minutes: $("event-reminder").value
+            ? parseInt($("event-reminder").value, 10)
+            : null,
+        recurrence_rule: $("event-recurrence").value.trim() || null,
+        is_all_day: type === "allday",
     };
 
     try {
@@ -289,10 +290,11 @@ async function handleFormSubmit(e) {
             await createEvent(data);
             showToast("Event created", "success");
         }
+
         hideModal(eventModal);
         await loadAndRender();
     } catch (err) {
-        showToast("Error: " + err.message, "error");
+        showToast("Error saving event: " + err.message, "error");
     }
 }
 
@@ -325,7 +327,7 @@ function showToast(message, type = "info") {
 
 // Return "YYYY-MM-DD" for a Date object.
 function isoDate(d) {
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 // ── Bind all UI events ────────────────────────────────────────────────────────
@@ -350,12 +352,12 @@ function bindUIEvents() {
 
     // Event modal close triggers.
     $("close-modal").addEventListener("click", () => hideModal(eventModal));
-    $("cancel-btn").addEventListener("click",  () => hideModal(eventModal));
+    $("cancel-btn").addEventListener("click", () => hideModal(eventModal));
     eventModal.addEventListener("click", e => { if (e.target === eventModal) hideModal(eventModal); });
 
     // Form actions.
     eventForm.addEventListener("submit", handleFormSubmit);
-    deleteBtn.addEventListener("click",  handleDelete);
+    deleteBtn.addEventListener("click", handleDelete);
 
     // Show/hide recurrence field when event type changes.
     $("event-type").addEventListener("change", e => {
@@ -379,6 +381,7 @@ function bindUIEvents() {
     $("user-id-input").addEventListener("keydown", e => {
         if (e.key === "Enter") $("confirm-user-btn").click();
     });
+
 }
 
 // ── Start ─────────────────────────────────────────────────────────────────────
