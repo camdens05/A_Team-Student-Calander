@@ -39,9 +39,9 @@ const MONTHS = [
 
 async function init() {
     bindUIEvents();
+    openCalendarToCurrentMonth();
 
     if (!currentUserId) {
-        // First visit — ask for user ID before loading anything.
         showModal(userModal);
     } else {
         userDisplay.textContent = currentUserId;
@@ -62,6 +62,11 @@ async function loadAndRender() {
 }
 
 // ── Calendar rendering ────────────────────────────────────────────────────────
+// Initializes the calendar to the current month and year when the page loads
+function openCalendarToCurrentMonth() {
+    currentDate = new Date();
+    renderCalendar();
+}
 
 function renderCalendar() {
     const year  = currentDate.getFullYear();
