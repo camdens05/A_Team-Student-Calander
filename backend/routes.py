@@ -16,6 +16,7 @@ from flask import jsonify, request
 from database import (
     create_event,
     delete_event,
+    ensure_user,
     get_event_by_id,
     get_events_by_user,
     update_event,
@@ -67,6 +68,8 @@ def register_routes(app):
             ), 400
 
         try:
+            ensure_user(data["user_id"])
+
             # Use event_factory to validate and build the correct event object
             event_obj = create_event_object(data["event_type"], data)
 
