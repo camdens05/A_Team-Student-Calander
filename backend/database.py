@@ -138,6 +138,20 @@ def dicts_from_rows(rows: list[sqlite3.Row]) -> list[dict[str, Any]]:
     return [dict(row) for row in rows]
 
 
+# Create a placeholder user with a specific id if one does not already exist.
+# This satisfies the FK constraint when the frontend supplies a bare numeric id.
+def ensure_user(user_id: int) -> None:
+    with get_db_connection() as conn:
+        conn.execute(
+            """
+            INSERT OR IGNORE INTO users (id, username, email)
+            VALUES (?, ?, ?)
+            """,
+            (user_id, f"user_{user_id}", f"user_{user_id}@calendar.local"),
+        )
+        conn.commit()
+
+
 # Insert a new user record and return its database id.
 def create_user(
     username: str,
