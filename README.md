@@ -1,14 +1,14 @@
 # A-Team Student Calendar
 
-A web-based calendar and planner built for students. Create and manage events by type — appointments, recurring events, and all-day events — with automatic conflict detection and priority ranking.
+A web-based calendar and planner built for students. Create and manage events by type — class, assignment, exam, study session, appointment, recurring, and all-day — with conflict detection, priority ranking, and per-event course and URL tracking.
 
 ## Setup
 
 **Requirements:** Python 3.8+
 
-Create and activate a virtual environment, then install dependencies:
 ```bash
 python -m venv .venv
+
 # Windows
 .venv\Scripts\activate
 # macOS/Linux
@@ -17,19 +17,19 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**Start the backend:**
+**Start the backend** (terminal 1):
 ```bash
 cd backend
 python app.py
 ```
 
-**Start the frontend** (in a separate terminal):
+**Start the frontend** (terminal 2):
 ```bash
 cd frontend
 python -m http.server 8000
 ```
 
-Open `http://localhost:8000` in your browser. The frontend connects to the backend at `http://localhost:5000`.
+Open `http://localhost:8000`. The frontend connects to the backend at `http://localhost:5000`.
 
 ## Running Tests
 
@@ -45,9 +45,11 @@ pytest tests/test_calendar_logic.py::TestConflictDetection::test_overlapping_eve
 ## Features
 
 - Monthly calendar view that opens to the current date
-- Three event types: Appointment, Recurring, All-Day
+- Seven event types: Class, Assignment, Exam, Study Session, Appointment, Recurring, All-Day
+- Per-event priority (low / medium / high), course label, and related URL
+- Recurrence presets (daily, weekly, Mon/Wed/Fri, Tue/Thu, monthly) plus custom RRULE input
 - Conflict detection when scheduling overlapping events
-- Priority ranking to surface important events
+- Upcoming events sidebar sorted by start time
 - Multi-user support via user ID selection (persisted in `localStorage`)
 
 ## Project Structure
@@ -56,6 +58,7 @@ pytest tests/test_calendar_logic.py::TestConflictDetection::test_overlapping_eve
 backend/          Flask REST API (port 5000)
 frontend/         Vanilla JS + HTML/CSS (static files)
 tests/            unittest test suite with SQLite temp-file isolation
+requirements.txt  Python dependencies
 pyproject.toml    Pytest and coverage configuration
 ```
 
