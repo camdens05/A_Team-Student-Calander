@@ -239,9 +239,17 @@ function openEditModal(ev) {
     $("event-location").value = ev.location || "";
     $("event-description").value = ev.description || "";
     $("event-reminder").value = ev.reminder_minutes != null ? ev.reminder_minutes : "";
-    $("event-recurrence").value = ev.recurrence_rule || "";
+    $("event-priority").value = ev.priority || "medium";
+    $("event-course").value = ev.course || "";
+    $("event-url").value = ev.url || "";
 
-    recurrenceGroup.classList.toggle("hidden", ev.event_type !== "recurring");
+    const rule = ev.recurrence_rule || "";
+    const knownPresets = ["FREQ=DAILY", "FREQ=WEEKLY", "FREQ=WEEKLY;BYDAY=MO,WE,FR", "FREQ=WEEKLY;BYDAY=TU,TH", "FREQ=MONTHLY"];
+    const preset = rule === "" ? "" : knownPresets.includes(rule) ? rule : "custom";
+    $("event-recurrence-preset").value = preset;
+    $("event-recurrence").value = rule;
+    recurrenceGroup.classList.toggle("hidden", preset !== "custom");
+
     deleteBtn.classList.remove("hidden");
 
     showModal(eventModal);
@@ -267,6 +275,11 @@ async function handleFormSubmit(e) {
     const startRaw = $("event-start").value;
     const endRaw = $("event-end").value;
 
+    const preset = $("event-recurrence-preset").value;
+    const recurrenceRule = preset === "custom"
+        ? $("event-recurrence").value.trim() || null
+        : preset || null;
+
     const data = {
         user_id: currentUserId,
         title: $("event-title").value.trim(),
@@ -278,8 +291,11 @@ async function handleFormSubmit(e) {
         reminder_minutes: $("event-reminder").value
             ? parseInt($("event-reminder").value, 10)
             : null,
-        recurrence_rule: $("event-recurrence").value.trim() || null,
+        recurrence_rule: recurrenceRule,
         is_all_day: type === "allday",
+        priority: $("event-priority").value || null,
+        course: $("event-course").value.trim() || null,
+        url: $("event-url").value.trim() || null,
     };
 
     try {
@@ -359,9 +375,16 @@ function bindUIEvents() {
     eventForm.addEventListener("submit", handleFormSubmit);
     deleteBtn.addEventListener("click", handleDelete);
 
-    // Show/hide recurrence field when event type changes.
-    $("event-type").addEventListener("change", e => {
-        recurrenceGroup.classList.toggle("hidden", e.target.value !== "recurring");
+    // Show custom recurrence input only when "Custom" preset is selected;
+    // for named presets, sync the value directly into the hidden text field.
+    $("event-recurrence-preset").addEventListener("change", e => {
+        const val = e.target.value;
+        if (val === "custom") {
+            recurrenceGroup.classList.remove("hidden");
+        } else {
+            recurrenceGroup.classList.add("hidden");
+            $("event-recurrence").value = val;
+        }
     });
 
     // User modal.

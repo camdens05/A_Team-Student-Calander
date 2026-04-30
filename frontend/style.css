@@ -20,6 +20,10 @@
     --c-appointment: #3b82f6;
     --c-recurring:   #10b981;
     --c-allday:      #8b5cf6;
+    --c-class:       #0ea5e9;
+    --c-assignment:  #f97316;
+    --c-exam:        #ef4444;
+    --c-study:       #14b8a6;
 
     --radius:  8px;
     --shadow:  0 1px 3px rgba(0,0,0,.10);
@@ -193,6 +197,10 @@ body {
 .event-chip.type-appointment { background: var(--c-appointment); }
 .event-chip.type-recurring   { background: var(--c-recurring); }
 .event-chip.type-allday      { background: var(--c-allday); }
+.event-chip.type-class       { background: var(--c-class); }
+.event-chip.type-assignment  { background: var(--c-assignment); }
+.event-chip.type-exam        { background: var(--c-exam); }
+.event-chip.type-study       { background: var(--c-study); }
 
 .more-events {
     font-size: .68rem;
@@ -239,6 +247,10 @@ body {
 .event-list-item.type-appointment { border-color: var(--c-appointment); }
 .event-list-item.type-recurring   { border-color: var(--c-recurring); }
 .event-list-item.type-allday      { border-color: var(--c-allday); }
+.event-list-item.type-class       { border-color: var(--c-class); }
+.event-list-item.type-assignment  { border-color: var(--c-assignment); }
+.event-list-item.type-exam        { border-color: var(--c-exam); }
+.event-list-item.type-study       { border-color: var(--c-study); }
 
 .event-list-item .ev-title {
     font-size: .875rem;
@@ -283,6 +295,10 @@ body {
 .legend-dot.type-appointment { background: var(--c-appointment); }
 .legend-dot.type-recurring   { background: var(--c-recurring); }
 .legend-dot.type-allday      { background: var(--c-allday); }
+.legend-dot.type-class       { background: var(--c-class); }
+.legend-dot.type-assignment  { background: var(--c-assignment); }
+.legend-dot.type-exam        { background: var(--c-exam); }
+.legend-dot.type-study       { background: var(--c-study); }
 
 /* ── Buttons ── */
 .btn-primary {
