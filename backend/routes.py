@@ -84,6 +84,9 @@ def register_routes(app):
                 recurrence_rule=event_obj.recurrence_rule,
                 is_all_day=event_obj.is_all_day,
                 reminder_minutes=event_obj.reminder_minutes,
+                priority=event_obj.priority,
+                course=event_obj.course,
+                url=event_obj.url,
             )
         except ValueError as exc:
             return jsonify({"error": str(exc)}), 400

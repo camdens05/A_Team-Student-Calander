@@ -24,6 +24,9 @@ class Event:
     recurrence_rule: Optional[str] = None
     is_all_day: bool = False
     reminder_minutes: Optional[int] = None
+    priority: Optional[str] = None
+    course: Optional[str] = None
+    url: Optional[str] = None
 
     # Return the event data as a dictionary.
     def to_dict(self) -> dict:
@@ -38,6 +41,9 @@ class Event:
             "recurrence_rule": self.recurrence_rule,
             "is_all_day": self.is_all_day,
             "reminder_minutes": self.reminder_minutes,
+            "priority": self.priority,
+            "course": self.course,
+            "url": self.url,
         }
 
 

@@ -55,6 +55,9 @@ def init_db() -> None:
                 recurrence_rule TEXT,
                 is_all_day INTEGER NOT NULL DEFAULT 0,
                 reminder_minutes INTEGER,
+                priority TEXT,
+                course TEXT,
+                url TEXT,
                 created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -124,6 +127,14 @@ def init_db() -> None:
         )
 
         conn.commit()
+
+        # Add columns introduced after the initial schema (safe to run on existing DBs).
+        for col, col_type in [("priority", "TEXT"), ("course", "TEXT"), ("url", "TEXT")]:
+            try:
+                conn.execute(f"ALTER TABLE events ADD COLUMN {col} {col_type}")
+                conn.commit()
+            except Exception:
+                pass  # column already exists
 
 
 # Convert one SQLite row into a standard Python dictionary.
@@ -203,15 +214,19 @@ def create_event(
     recurrence_rule: Optional[str] = None,
     is_all_day: bool = False,
     reminder_minutes: Optional[int] = None,
+    priority: Optional[str] = None,
+    course: Optional[str] = None,
+    url: Optional[str] = None,
 ) -> int:
     with get_db_connection() as conn:
         cursor = conn.execute(
             """
             INSERT INTO events (
                 user_id, title, description, event_type, start_time, end_time,
-                location, recurrence_rule, is_all_day, reminder_minutes
+                location, recurrence_rule, is_all_day, reminder_minutes,
+                priority, course, url
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 user_id,
@@ -224,6 +239,9 @@ def create_event(
                 recurrence_rule,
                 int(is_all_day),
                 reminder_minutes,
+                priority,
+                course,
+                url,
             ),
         )
         conn.commit()
@@ -266,6 +284,9 @@ def update_event(event_id: int, **fields: Any) -> bool:
         "recurrence_rule",
         "is_all_day",
         "reminder_minutes",
+        "priority",
+        "course",
+        "url",
     }
 
     updates = []
