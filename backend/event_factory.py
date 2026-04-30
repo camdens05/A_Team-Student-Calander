@@ -24,11 +24,11 @@ def create_event_object(event_type: str, data: dict) -> Event:
         "location": data.get("location"),
         "recurrence_rule": data.get("recurrence_rule"),
         "reminder_minutes": data.get("reminder_minutes"),
+        "priority": data.get("priority"),
+        "course": data.get("course"),
+        "url": data.get("url"),
         "event_type": normalized_type,
     }
-
-    if normalized_type == "event":
-        return Event(**common_args)
 
     if normalized_type == "appointment":
         return AppointmentEvent(**common_args)
@@ -39,4 +39,5 @@ def create_event_object(event_type: str, data: dict) -> Event:
     if normalized_type in {"allday", "all-day", "all_day"}:
         return AllDayEvent(**common_args)
 
-    raise ValueError(f"Invalid event type: {event_type}")
+    # class, assignment, exam, study, event, and any other type stored as-is
+    return Event(**common_args)
